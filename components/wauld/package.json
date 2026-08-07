@@ -1,0 +1,18 @@
+{
+  "name": "@pipedream/wauld",
+  "version": "0.0.1",
+  "description": "Pipedream Wauld Components",
+  "main": "wauld.app.mjs",
+  "keywords": [
+    "pipedream",
+    "wauld"
+  ],
+  "homepage": "https://pipedream.com/apps/wauld",
+  "author": "Pipedream <support@pipedream.com> (https://pipedream.com/)",
+  "dependencies": {
+    "@pipedream/platform": "^3.2.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
