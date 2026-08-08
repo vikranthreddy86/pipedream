@@ -27,7 +27,7 @@ const getAttributeNames = (document = {}) => [
 export default {
   key: "wauld-issue-credential",
   name: "Issue Credential",
-  description: "Issue a credential to a recipient using a Wauld document.",
+  description: "Issues a new credential using the selected document and recipient details.",
   version: "0.0.1",
   type: "action",
 
@@ -44,7 +44,7 @@ export default {
       type: "string",
       label: "Workspace",
       description:
-        "Select the Wauld workspace containing the credential document.",
+        "Choose the Wauld workspace where the document to be issued is located.",
 
       async options() {
         const workspaces = await listWorkspaces({
@@ -66,7 +66,7 @@ export default {
       type: "string",
       label: "Engagement",
       description:
-        "Select the engagement containing the credential document.",
+        "Choose the engagement within which the document to be issued is located.",
 
       async options() {
         if (!this.workspaceId) {
@@ -89,7 +89,7 @@ export default {
     documentId: {
       type: "string",
       label: "Document",
-      description: "Select the document to use for the credential.",
+      description: "Choose the document that is to be issued as a credential.",
       reloadProps: true,
 
       async options() {
@@ -113,27 +113,27 @@ export default {
     recipientName: {
       type: "string",
       label: "Recipient Name",
-      description: "Enter the name of the credential recipient.",
+      description: "Enter the full name of the recipient that will receive the credential.",
     },
 
     recipientEmail: {
       type: "string",
       label: "Recipient Email",
-      description: "Enter the email address of the credential recipient.",
+      description: "Enter the email address of the recipient. Wauld will send the issued credential to this email address.",
     },
 
     expireTime: {
       type: "string",
       label: "Expiration Time",
       description:
-        "Optional credential expiration timestamp in RFC 3339 format, for example 2026-12-31T23:59:59Z.",
+        "Enter the expiry date for the credential to be issued. Leave this field blank if the credential should never expire. Optional credential expiration timestamp in RFC 3339 format, for example 2026-12-31T23:59:59Z.",
       optional: true,
     },
 
     sharable: {
       type: "boolean",
       label: "Sharable",
-      description: "Allow the recipient to share the credential.",
+      description: "Choose whether recipients can share issued credentials externally.",
       optional: true,
       default: true,
     },
@@ -141,7 +141,7 @@ export default {
     linkedIn: {
       type: "boolean",
       label: "LinkedIn",
-      description: "Allow LinkedIn sharing for the credential.",
+      description: "Choose whether recipients can add issued credentials to their LinkedIn profiles.",
       optional: true,
       default: true,
     },

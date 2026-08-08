@@ -16,7 +16,7 @@ const getAccountId = (component) =>
 export default {
   key: "wauld-new-credential-issued",
   name: "New Credential Issued",
-  description: "Emit a new event when a credential is issued in Wauld.",
+  description: "Triggers when a new credential is issued in Wauld.",
   version: "0.0.1",
   type: "source",
   dedupe: "unique",
