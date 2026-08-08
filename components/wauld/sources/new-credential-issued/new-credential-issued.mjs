@@ -1,4 +1,4 @@
-import crypto from "node:crypto";
+import { createHash } from "node:crypto";
 
 import app from "../../wauld.app.mjs";
 
@@ -23,8 +23,13 @@ export default {
 
   props: {
     app,
+
     db: "$.service.db",
-    http: "$.interface.http",
+
+    http: {
+      type: "$.interface.http",
+      customResponse: true,
+    },
   },
 
   hooks: {
@@ -43,61 +48,52 @@ export default {
         );
       }
 
-      this.db.set("webhookId", webhook.id);
+      this.db.set("hookId", webhook.id);
     },
 
     async deactivate() {
-      const webhookId = this.db.get("webhookId");
+      const hookId = this.db.get("hookId");
 
-      if (!webhookId) {
+      if (!hookId) {
         return;
       }
 
       await deleteWebhook({
         $: this,
         accessToken: getAccessToken(this),
-        webhookId,
+        webhookId: hookId,
       });
 
-      this.db.delete("webhookId");
+      this.db.delete("hookId");
     },
   },
 
   methods: {
     getEventId(body) {
-      return (
-        body?.credential?.id ||
-        body?.credentialId ||
-        body?.id ||
-        crypto.randomUUID()
-      );
+      if (body?.id) {
+        return String(body.id);
+      }
+
+      return createHash("sha256")
+        .update(JSON.stringify(body))
+        .digest("hex");
     },
 
     getEventTimestamp(body) {
-      const timestamp =
-        body?.credential?.publishTime ||
-        body?.publishTime ||
-        body?.createTime;
-
-      if (!timestamp) {
+      if (!body?.issueTime) {
         return Date.now();
       }
 
-      const parsed = Date.parse(timestamp);
+      const timestamp = Date.parse(body.issueTime);
 
-      return Number.isNaN(parsed)
+      return Number.isNaN(timestamp)
         ? Date.now()
-        : parsed;
+        : timestamp;
     },
 
     getEventSummary(body) {
-      const recipientEmail =
-        body?.credential?.recipient?.email ||
-        body?.recipient?.email;
-
-      const documentName =
-        body?.credential?.document?.name ||
-        body?.document?.name;
+      const documentName = body?.document?.name;
+      const recipientEmail = body?.recipient?.email;
 
       if (documentName && recipientEmail) {
         return `${documentName} issued to ${recipientEmail}`;
@@ -112,12 +108,14 @@ export default {
   },
 
   async run(event) {
-    if (event.body === undefined) {
-      console.log("Webhook event body is undefined. Skipping event.");
-      return;
-    }
+    const body = event.body ?? {};
 
-    const body = event.body;
+    this.http.respond({
+      status: 200,
+      body: {
+        received: true,
+      },
+    });
 
     this.$emit(body, {
       id: this.getEventId(body),

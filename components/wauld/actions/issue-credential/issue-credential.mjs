@@ -138,15 +138,6 @@ export default {
       default: true,
     },
 
-    wallet: {
-      type: "boolean",
-      label: "Wallet",
-      description:
-        "Allow the recipient to add the credential to a supported wallet.",
-      optional: true,
-      default: true,
-    },
-
     linkedIn: {
       type: "boolean",
       label: "LinkedIn",
@@ -239,7 +230,6 @@ export default {
       attributes,
 
       sharable: this.sharable ?? true,
-      wallet: this.wallet ?? true,
       linkedIn: this.linkedIn ?? true,
     };
 
